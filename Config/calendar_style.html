@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Calendars</title>
+<meta charset="utf-8">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+  clear: both;
+  background-color: darkslategray;
+  text-align: center;
+  clear: both;
+  padding: 15px;
+  font-size: 30px;
+  font-weight: bold;
+  height: 60px;
+  color: white;
+}
+
+footer {
+  clear: both;
+  background-color: darkgrey;
+  height: 400px;
+}
+
+mon {
+  display: table;
+  text-align: center;
+  float: left;
+  padding: 10px;
+  width: 25%;
+  height: 20%;
+  background-color: aliceblue;
+}
+
+.year {
+  clear: both;
+  text-align: center;
+  padding: 5px;
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  height: 30px;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+/* Items pertaining to month boxes: 8 columns and as many rows as required */
+.grid-container {
+  display: grid;
+  grid-auto-rows: 1fr;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  padding: 0px;
+}
+
+.day {
+  background-color: white;
+}
+
+.sat {
+  background-color: moccasin;
+}
+
+.sun {
+  background-color: lightsalmon;
+}
+
+.label {
+  background-color: darkgrey;
+}
+
+.day, .label, .sat, .sun {
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.month-name {
+  background-color: lightgreen;
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+</style>
+</head>
+
