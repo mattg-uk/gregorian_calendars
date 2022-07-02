@@ -48,7 +48,11 @@ public:
         
     static std::string footerOpen()     { return "<footer>"; }
     static std::string footerClose()    { return "</footer>"; }
-        
+
+    static std::string scriptOpen()     { return "<script>"; }
+    static std::string scriptClose()    { return "</script>"; }
+    static std::string locationReplace(const std::string& hRef) { return std::string("location.replace('") + hRef + "')"; }
+
     static std::string htmlOpen()       { return "<html>"; }
     static std::string htmlClose()      { return "</html>"; }
 
