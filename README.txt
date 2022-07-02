@@ -7,6 +7,19 @@ The build prerequisites are: cmake build-essential (ninja-build) and can be inst
 
 sudo apt install build-essential cmake ninja-build
 
+Convenience Script:
+-------------------
+
+run the following command in the source folder
+
+./examples.sh <OUTPUT_FOLDER>
+
+<OUTPUT FOLDER> is where example calendars for 1800, 1900, 2000, and 2017 will be generated.
+
+N.B. This folder must already exist!
+
+
+OR: ---
 
 Build Instructions
 ------------------

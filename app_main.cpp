@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------------------ 
+/* ------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Matthew Nathan Green
@@ -16,35 +16,32 @@ copies or substantial portions of the Software.
 
 #include <getopt.h>
 
-#include <sstream>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <filesystem>
 #include <regex>
+#include <sstream>
 
 #include "interface.h"
 
 namespace fs = std::filesystem;
 
-fs::path stylePath = fs::current_path() / fs::path("Config") / fs::path("calendar_style.html"); 
+fs::path stylePath = fs::current_path() / fs::path("Config") / fs::path("calendar_style.html");
 
-std::string help = "\nThis application outputs the calendars for a given year and those adjacent."
-                    "\n--year,\t\t-y\tSpecify the year to generate a calendar for."
-                    "\n--outfile,\t-o\tSpecify the file name for output (.html will be appended if not supplied)."
-                    "\n--help,\t\t-h\tDisplay this message"
-                    "\n";
+std::string help =
+    "\nThis application outputs the calendars for a given year and those adjacent."
+    "\n--year,\t\t-y\tSpecify the year to generate a calendar for."
+    "\n--outfile,\t-o\tSpecify the file name for output (.html will be appended if not supplied)."
+    "\n--help,\t\t-h\tDisplay this message"
+    "\n";
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
     namespace fs = std::filesystem;
-   
-    static struct option longOptions[] =
-    {
-        {"help",    no_argument,        nullptr,    'h' },
-        {"year",    required_argument,  nullptr,    'y' },
-        {"outfile", required_argument,  nullptr,    'o' },
-        {   0,  0,  0,  0}
-    };
+    static struct option longOptions[] = {{"help", no_argument, nullptr, 'h'},
+                                          {"year", required_argument, nullptr, 'y'},
+                                          {"outfile", required_argument, nullptr, 'o'},
+                                          {0, 0, 0, 0}};
 
     // Since the filename and year are OPTIONS, not arguments, defaults must be provided
     fs::path filepath{"default.html"};
@@ -62,8 +59,7 @@ int main(int argc, char* argv[]) {
             halt = true;
             argsDone = true;
             break;
-        case 'y':
-        {
+        case 'y': {
             std::stringstream parse{optarg};
             parse >> year;
             halt |= (parse.fail() || year < getLowerBound());
@@ -73,7 +69,7 @@ int main(int argc, char* argv[]) {
             filepath = fs::path{optarg};
             halt |= filepath.string().empty();
             break;
-         default:
+        default:
             argsDone = true;
             break;
         }
@@ -94,8 +90,9 @@ int main(int argc, char* argv[]) {
         std::cout << "Found config file: " << stylePath << "\n"; // It will appear in quotes
     } else {
         std::cout << "Config file not found! :" << stylePath << "\n";
-        exit (-1);
+        exit(-1);
     }
+
     std::ifstream styleFile{stylePath};
     std::stringstream style;
     style << styleFile.rdbuf();
@@ -106,10 +103,10 @@ int main(int argc, char* argv[]) {
         std::cout << "\nCould not create file: " << filepath.string();
         exit(-1);
     }
-    std::cout << "Creating file: " << filepath.string() << " for year " << year << std::endl;
-     
-    generateCalendars(file, year, style.str());
-    
-    return 0; 
-}
 
+    std::cout << "Creating file: " << filepath.string() << " for year " << year << std::endl;
+
+    generateCalendars(file, year, style.str());
+
+    return 0;
+}

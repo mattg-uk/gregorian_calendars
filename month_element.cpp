@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------------------ 
+/* ------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Matthew Nathan Green
@@ -17,9 +17,16 @@ copies or substantial portions of the Software.
 #include "month_element.h"
 #include "util.h"
 
+struct demo {
+    int classVar;
+    int method(int param) {
+        int methodLocalVar;
+        return classVar + methodLocalVar + param;
+    }
+};
+
 MonthElement::MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYear, int year)
-    : m_monthIndex(monthIndex)
-{
+    : m_monthIndex(monthIndex) {
     // Obtain the number of days this month
     size_t daysToPopulate = Util::daysPerMonth[monthIndex];
     if (leapYear && monthIndex == Util::indexFebruary) {
@@ -37,7 +44,7 @@ MonthElement::MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYe
     size_t monthStartIndex = (yearStartIndex + monthStartDayNumber) % Util::daysInAWeek;
 
     // Populate headers
-    for (const auto& item : Util::headerNames) {
+    for (const auto &item : Util::headerNames) {
         addCell(item);
     }
     // First row: populate the week number and the leading blank cells
@@ -50,7 +57,7 @@ MonthElement::MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYe
     for (size_t date = 1; date <= daysToPopulate; ++date) {
         size_t cellIndex = m_contents.size();
         if (cellIndex % Util::tableColumns == 0) {
-            addCell(std::to_string(++week));    
+            addCell(std::to_string(++week));
         }
         std::string cellData = validityCheck(std::to_string(date), date, monthIndex, year);
         addCell(cellData);
@@ -58,12 +65,11 @@ MonthElement::MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYe
     // Fill in the empty spaces at the end - allow an extra row for the headers
     // Must be actual space otherwise the renderer will truncate the output
     while (m_contents.size() < Util::tableColumns * (Util::tableDataRows + 1)) {
-        addCell(std::string(" "));    
+        addCell(std::string(" "));
     }
 }
 
-void MonthElement::addCell(const std::string& data)
-{
+void MonthElement::addCell(const std::string &data) {
     size_t cellIndex = m_contents.size();
     std::string cellType;
     if (cellIndex < Util::tableColumns) {
@@ -71,23 +77,24 @@ void MonthElement::addCell(const std::string& data)
     } else {
         cellType = Util::columnType[cellIndex % Util::tableColumns];
     }
-    m_contents.emplace_back(cellType, data);     
+    m_contents.emplace_back(cellType, data);
 }
 
-void MonthElement::htmlOut(std::iostream& file) const 
-{
+void MonthElement::htmlOut(std::iostream &file) const {
     file << Util::tab2 << Util::monOpen() << '\n';
-    file << Util::tab4 << Util::divTagOpen("month-name") << Util::monthNames[m_monthIndex] << Util::divTagClose() << '\n';
+    file << Util::tab4 << Util::divTagOpen("month-name") << Util::monthNames[m_monthIndex]
+         << Util::divTagClose() << '\n';
     file << Util::tab4 << Util::divTagOpen("grid-container") << '\n';
-    for (const auto& item : m_contents) {
-        file << Util::tab6 << Util::divTagOpen(item.first) << item.second << Util::divTagClose() << '\n';
+    for (const auto &item : m_contents) {
+        file << Util::tab6 << Util::divTagOpen(item.first) << item.second << Util::divTagClose()
+             << '\n';
     }
     file << Util::tab4 << Util::divTagClose() << '\n';
     file << Util::tab2 << Util::monClose() << '\n';
 }
 
-std::string MonthElement::validityCheck(std::string&& input, size_t date, size_t monthIndex, size_t year)
-{
+std::string MonthElement::validityCheck(std::string &&input, size_t date, size_t monthIndex,
+                                        size_t year) {
     // Guard out the most common cases
     std::string returnValue = std::move(input);
     if (year > Util::gregYear) {
@@ -97,8 +104,8 @@ std::string MonthElement::validityCheck(std::string&& input, size_t date, size_t
     if (year < Util::gregYear) {
         returnValue.clear();
         return returnValue;
-    } 
-    
+    }
+
     // So it's 1582: must check both the month and the date
     if (monthIndex < Util::gregMonthIndex) {
         returnValue.clear();
@@ -108,5 +115,4 @@ std::string MonthElement::validityCheck(std::string&& input, size_t date, size_t
         }
     }
     return returnValue;
-
 }

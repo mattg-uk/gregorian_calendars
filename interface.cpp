@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------------------ 
+/* ------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Matthew Nathan Green
@@ -26,21 +26,19 @@ copies or substantial portions of the Software.
 #include <algorithm>
 #include <regex>
 
-// This function pushes out the style section of the html, and, for each year, pushes headers, a link
-// banner, and then creates a calendar object for that year and uses it to generate the tables
-bool generateCalendars(std::fstream& file, size_t year, std::string htmlTemplate)
-{
+// This function pushes out the style section of the html, and, for each year, pushes headers, a
+// link banner, and then creates a calendar object for that year and uses it to generate the tables
+bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
     // The implementation is stateless
     using Implementation = GregorianImpl<MonthElement>;
-    Implementation imlementation;
-    
-    // For each of the 3 years we need a number, an id, a link 
-    std::vector<size_t> yearNumbers {year - 1, year, year + 1};
+    Implementation implementation;
+
+    std::vector<size_t> yearNumbers{year - 1, year, year + 1};
     std::vector<std::string> yearId;
     std::vector<std::string> yearHref;
 
     // Populate these containers
-    for (auto number : yearNumbers ) {
+    for (auto number : yearNumbers) {
         yearId.push_back(std::string("year_") + std::to_string(number));
         yearHref.push_back(std::string("#") + yearId.back());
     }
@@ -49,33 +47,37 @@ bool generateCalendars(std::fstream& file, size_t year, std::string htmlTemplate
 
     // Fix the title, creates a new string then moves it onto the old
     std::string title = "Year " + std::to_string(year) + " Calendar";
-    htmlTemplate = std::regex_replace(htmlTemplate, std::regex("Calendar Title"), title);
+    std::string modifiedHtml =
+        std::regex_replace(htmlTemplate, std::regex("Calendar Title"), title);
 
-    file << htmlTemplate;
+    file << modifiedHtml;
     file << Util::bodyOpen() << "\n\n";
 
     for (size_t index = 0; index < yearNumbers.size(); ++index) {
         std::cout << "Creating html for year : " << yearNumbers[index] << std::endl;
-        
+
         // Header for this year, coding in id so that it can be linked to
-        file << Util::headerOpen(yearId[index]) << "Calendar Year " << yearNumbers[index] << Util::headerClose() << "\n\n";
+        file << Util::headerOpen(yearId[index]) << "Calendar Year " << yearNumbers[index]
+             << Util::headerClose() << "\n\n";
         file << Util::sectionOpen() << "\n";
-        
-        // Year selector: years in order, with the current year hard-coded and the other two as links
+
+        // Year selector: years in order, with the current year hard-coded and the other two as
+        // links
         file << Util::tab2 << Util::divTagOpen("year_selector") + "\n";
         for (size_t subIndex = 0; subIndex < yearNumbers.size(); ++subIndex) {
             if (subIndex == index) {
                 file << Util::tab4 << yearNumbers[subIndex] << "\n";
             } else {
-                file << Util::tab4 << Util::aTagOpen(yearHref[subIndex]) << yearNumbers[subIndex] << Util::aTagClose() << "\n";
+                file << Util::tab4 << Util::aTagOpen(yearHref[subIndex]) << yearNumbers[subIndex]
+                     << Util::aTagClose() << "\n";
             }
         }
         file << Util::tab2 << Util::divTagClose();
-        
+
         // Finally, push out the divs from which the html will create the calendar tables
-        Calendar yearCalender (yearNumbers[index], imlementation);
+        Calendar yearCalender(yearNumbers[index], implementation);
         yearCalender.htmlPrint(file);
-        
+
         file << Util::sectionClose() << "\n\n";
     }
 
@@ -93,8 +95,4 @@ bool generateCalendars(std::fstream& file, size_t year, std::string htmlTemplate
     return true;
 }
 
-size_t getLowerBound()
-{
-    return Util::gregYear;
-}
-
+size_t getLowerBound() { return Util::gregYear; }

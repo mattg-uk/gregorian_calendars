@@ -35,18 +35,18 @@ class GregorianImpl {
 public:
     typedef MonthType MonthType_t;
 
-    void htmlOut(std::iostream& stream, const std::vector<MonthType>& months);
-    std::vector<MonthType> populateMonths(int year);
+    void htmlOut(std::iostream& stream, const std::vector<MonthType_t>& months) const;
+    std::vector<MonthType> populateMonths(int year) const;
     
-    bool   isLeapYear(int year);
-    size_t getBaseIndex(int year);
+    bool   isLeapYear(int year) const;
+    size_t getBaseIndex(int year) const;
 };
 
 
 // TEMPLATE IMPLEMENTATION ----------------------------------------------------------------------------
 
 template <typename MonthType>
-void GregorianImpl<MonthType>::htmlOut(std::iostream& stream, const std::vector<MonthType>& months)
+void GregorianImpl<MonthType>::htmlOut(std::iostream& stream, const std::vector<MonthType>& months) const
 {
     for (const auto& month : months) {
         month.htmlOut(stream);
@@ -54,7 +54,7 @@ void GregorianImpl<MonthType>::htmlOut(std::iostream& stream, const std::vector<
 }
 
 template <typename MonthType>
-std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year)
+std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year) const
 {
     
     size_t yearStartIndex = getBaseIndex(year);
@@ -68,13 +68,13 @@ std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year)
 
 // A leap year occurs if the year is divisible by 4, but not by 100, unless it is divisble by 400 - in which case it is
 template <typename MonthType>
-bool GregorianImpl<MonthType>::isLeapYear(int year) 
+bool GregorianImpl<MonthType>::isLeapYear(int year) const
 { 
     return (year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)); 
 }
 
 template <typename MonthType>
-size_t GregorianImpl<MonthType>::getBaseIndex(int year)
+size_t GregorianImpl<MonthType>::getBaseIndex(int year) const
 {
     // Oct 15, 1582 is a Friday (index 4). Jan 1st 1582 also index 4 - remove invalid dates later 
     // Index changes by 365 % 7, i.e. +1 per year; +2 for a leap year

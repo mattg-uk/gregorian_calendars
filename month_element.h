@@ -31,7 +31,7 @@ copies or substantial portions of the Software.
 class MonthElement {
 public:
     
-    MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYear, int year);
+    explicit MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYear, int year);
     
     // Everything about this month that is needed in html - output to a stream
     void htmlOut(std::iostream& stream) const;

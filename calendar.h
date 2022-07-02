@@ -17,27 +17,29 @@ copies or substantial portions of the Software.
 #ifndef CALENDAR_H
 #define CALENDAR_H
 
-// This class represents a generalized calendar. The Gregorian specific implementation
-// will be injected as a strategy.
+// This class represents a generalized calendar. LIFETIME OF THE DEPENDENCY SHALL
+// BE MANAGED IN THE CALLING SCOPE AND MUST BE >= THAN THE Calendar LIFETIME.
 
 #include <iostream>
 #include <vector>
 
-// Implementation is passed via stateless dependency injection
+// While the dependency is stateless, passing a reference or a smart pointer is
+// more convenient than a copy. Here, the calendar class will not be copied, 
+// returned, or stored, so a reference is acceptable.
 template <class IMPL>
 class Calendar {
 public:
-    Calendar(int year, IMPL implementation);
-    void htmlPrint(std::iostream& stream);
-    int getYear();
+    explicit Calendar(int year, IMPL& implementation);
+    void htmlPrint(std::iostream& stream) const;
+    int getYear() const;
 private:
-    IMPL m_impl;
+    IMPL& m_impl;
     int m_year;
     std::vector<typename IMPL::MonthType_t> m_months;
 };
 
 template <class IMPL>
-Calendar<IMPL>::Calendar(int year, IMPL implementation) : 
+Calendar<IMPL>::Calendar(int year, IMPL& implementation) : 
                                      m_impl(implementation),
                                      m_year(year), 
                                      m_months(m_impl.populateMonths(year))
@@ -45,13 +47,13 @@ Calendar<IMPL>::Calendar(int year, IMPL implementation) :
 }
 
 template <class IMPL>
-void Calendar<IMPL>::htmlPrint(std::iostream& stream)
+void Calendar<IMPL>::htmlPrint(std::iostream& stream) const
 {
     m_impl.htmlOut(stream, m_months);
 }
 
 template <class IMPL>
-int Calendar<IMPL>::getYear()
+int Calendar<IMPL>::getYear() const
 {
     return m_year;
 }

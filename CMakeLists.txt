@@ -15,3 +15,7 @@ add_custom_command(TARGET calendar POST_BUILD
                    COMMAND cp -r ${CMAKE_SOURCE_DIR}/Config ${CMAKE_BINARY_DIR}
 ) 
 
+# Must enable testing before the subdirectory
+enable_testing()
+add_subdirectory(test)
+
