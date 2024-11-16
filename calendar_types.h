@@ -14,29 +14,25 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 -------------------------------------------------------------------------------- */
 
-#ifndef CALENDAR_H
-#define CALENDAR_H
+#ifndef CALENDAR_TYPES_H
+#define CALENDAR_TYPES_H
 
-#include <iostream>
+#include <string>
 #include <vector>
+// namespace Cal {
+enum class CellType { Label, Workday, Weekend1, Weekend2 };
 
-// The Calendar is a wrapper to store the output from the chosen implementation,
-// upon instantiation the existance of the required functions will be verified.
-template <class IMPL> class Calendar {
+using DataStorage = std::vector<std::pair<CellType, std::string>>;
+
+// Allows a completely generic definition of a calender
+class Properties {
   public:
-    explicit Calendar(int year, IMPL &implementation);
-    void htmlPrint(std::iostream &stream) const;
-
-  private:
-    std::vector<typename IMPL::MonthType_t> m_months;
+    const size_t daysInAWeek;
+    const std::vector<std::string> monthNames;
+    const std::vector<std::size_t> daysPerMonth;
+    const std::vector<std::string> headerNames;
+    const std::vector<CellType> dataType;
+    const std::vector<CellType> headerType;
 };
-
-template <class IMPL>
-Calendar<IMPL>::Calendar(int year, IMPL &implementation)
-    : m_months(implementation.populateMonths(year)) {}
-
-template <class IMPL> void Calendar<IMPL>::htmlPrint(std::iostream &stream) const {
-    IMPL::htmlOut(stream, m_months);
-}
-
-#endif // CALENDAR_H
+//} // namespace Cal
+#endif

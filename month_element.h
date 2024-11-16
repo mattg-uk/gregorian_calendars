@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------------------ 
+/* ------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Matthew Nathan Green
@@ -20,30 +20,31 @@ copies or substantial portions of the Software.
 // A simple class to abstract the creation of individual month blocks in the calendar.
 
 // The implementation stores a vector of 'cells' which contain headers, week numbers, dates
-// and blank spaces, alongside html class information.
+// and blank spaces.
 
-// The output is a series of div tags that can be interpretted in html as a table.
+// The no html work is done by this class: htmlOut delegates conversion to Util in util.cpp.
 
-#include <vector>
-#include <string>
 #include <iostream>
+#include <string>
+
+#include "calendar_types.h"
 
 class MonthElement {
-public:
-    
-    explicit MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYear, int year);
-    
+  public:
+    // End range is one past highest value
+    explicit MonthElement(const std::string &monthName, size_t dateStart, size_t dateRangeEnd,
+                          size_t monthStartIndex, size_t weekNumber, const Properties &params);
+
     // Everything about this month that is needed in html - output to a stream
-    void htmlOut(std::iostream& stream) const;
-    
-    void addCell(const std::string& data);
+    void htmlOut(std::iostream &stream) const;
 
-    // Blank out a string based on the validity of the year - consumes input
-    static std::string validityCheck(std::string&& input, size_t date, size_t monthIndex, size_t year);
+  private:
+    void addCell(const std::string &data, const Properties &params);
 
-private:
-    std::vector<std::pair<std::string, std::string>> m_contents;
-    size_t m_monthIndex;
+    DataStorage m_contents;
+    std::string m_monthName;
+    size_t m_tableColumns;
+    size_t m_tableDataRows;
 };
 
 #endif // MONTH_ELEMENT_H

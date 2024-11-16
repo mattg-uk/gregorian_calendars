@@ -16,103 +16,49 @@ copies or substantial portions of the Software.
 
 #include "month_element.h"
 #include "util.h"
+#include <algorithm>
 
-struct demo {
-    int classVar;
-    int method(int param) {
-        int methodLocalVar;
-        return classVar + methodLocalVar + param;
-    }
-};
+MonthElement::MonthElement(const std::string &monthName, size_t dateStart, size_t dateEnd,
+                           size_t monthStartDayIndex, size_t weekNumber, const Properties &params)
+    : m_monthName{monthName} {
 
-MonthElement::MonthElement(size_t monthIndex, size_t yearStartIndex, bool leapYear, int year)
-    : m_monthIndex(monthIndex) {
-    // Obtain the number of days this month
-    size_t daysToPopulate = Util::daysPerMonth[monthIndex];
-    if (leapYear && monthIndex == Util::indexFebruary) {
-        ++daysToPopulate;
-    }
+    // This will throw an exception if there is not at least one month
+    size_t longestMonth = *std::max_element(params.daysPerMonth.begin(), params.daysPerMonth.end());
 
-    // Obtain the index of the day that the month starts on (the monthStartIndex)
-    size_t monthStartDayNumber = 0;
-    for (size_t i = 0; i < monthIndex; ++i) {
-        monthStartDayNumber += Util::daysPerMonth[i];
-    }
-    if (leapYear && monthIndex > Util::indexFebruary) {
-        ++monthStartDayNumber;
-    }
-    size_t monthStartIndex = (yearStartIndex + monthStartDayNumber) % Util::daysInAWeek;
+    m_tableColumns = params.daysInAWeek + 1;
+    m_tableDataRows = std::max(size_t(1), (longestMonth - 2) / params.daysInAWeek + 2);
 
     // Populate headers
-    for (const auto &item : Util::headerNames) {
-        addCell(item);
+    for (const auto &item : params.headerNames) {
+        addCell(item, params);
     }
-    // First row: populate the week number and the leading blank cells
-    size_t week = monthStartDayNumber / Util::daysInAWeek + 1;
-    addCell(std::to_string(week));
-    for (size_t count = 0; count < monthStartIndex; ++count) {
-        addCell(std::string());
-    }
-    // Fill in the dates
-    for (size_t date = 1; date <= daysToPopulate; ++date) {
-        size_t cellIndex = m_contents.size();
-        if (cellIndex % Util::tableColumns == 0) {
-            addCell(std::to_string(++week));
+
+    // First row: populate the data rows, including blank cells
+    size_t week = weekNumber;
+    size_t date = dateStart;
+    for (size_t dataIndex = 0; dataIndex < m_tableDataRows * params.daysInAWeek; ++dataIndex) {
+        std::string data;
+        if (m_contents.size() % m_tableColumns == 0) {
+            addCell(std::to_string(week++), params);
         }
-        std::string cellData = validityCheck(std::to_string(date), date, monthIndex, year);
-        addCell(cellData);
-    }
-    // Fill in the empty spaces at the end - allow an extra row for the headers
-    // Must be actual space otherwise the renderer will truncate the output
-    while (m_contents.size() < Util::tableColumns * (Util::tableDataRows + 1)) {
-        addCell(std::string(" "));
+        if (dataIndex >= monthStartDayIndex && date <= dateEnd) {
+            data = std::to_string(date++);
+        }
+        addCell(data, params);
     }
 }
 
-void MonthElement::addCell(const std::string &data) {
+void MonthElement::addCell(const std::string &data, const Properties &params) {
     size_t cellIndex = m_contents.size();
-    std::string cellType;
-    if (cellIndex < Util::tableColumns) {
-        cellType = Util::headerType[cellIndex];
+    CellType cellType;
+    if (cellIndex < m_tableColumns) {
+        cellType = params.headerType[cellIndex];
     } else {
-        cellType = Util::columnType[cellIndex % Util::tableColumns];
+        cellType = params.dataType[cellIndex % m_tableColumns];
     }
     m_contents.emplace_back(cellType, data);
 }
 
-void MonthElement::htmlOut(std::iostream &file) const {
-    file << Util::tab2 << Util::monOpen() << '\n';
-    file << Util::tab4 << Util::divTagOpen("month-name") << Util::monthNames[m_monthIndex]
-         << Util::divTagClose() << '\n';
-    file << Util::tab4 << Util::divTagOpen("grid-container") << '\n';
-    for (const auto &item : m_contents) {
-        file << Util::tab6 << Util::divTagOpen(item.first) << item.second << Util::divTagClose()
-             << '\n';
-    }
-    file << Util::tab4 << Util::divTagClose() << '\n';
-    file << Util::tab2 << Util::monClose() << '\n';
-}
-
-std::string MonthElement::validityCheck(std::string &&input, size_t date, size_t monthIndex,
-                                        size_t year) {
-    // Guard out the most common cases
-    std::string returnValue = std::move(input);
-    if (year > Util::gregYear) {
-        return returnValue;
-    }
-
-    if (year < Util::gregYear) {
-        returnValue.clear();
-        return returnValue;
-    }
-
-    // So it's 1582: must check both the month and the date
-    if (monthIndex < Util::gregMonthIndex) {
-        returnValue.clear();
-    } else if (monthIndex == Util::gregMonthIndex) {
-        if (date < Util::gregDate) {
-            returnValue.clear();
-        }
-    }
-    return returnValue;
+void MonthElement::htmlOut(std::iostream &stream) const {
+    stream << Util::monthAsHtmlString(m_monthName, m_contents);
 }

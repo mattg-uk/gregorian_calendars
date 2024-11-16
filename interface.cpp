@@ -23,15 +23,11 @@ copies or substantial portions of the Software.
 
 #include "util.h"
 
-#include <algorithm>
 #include <regex>
 
 // This function pushes out the style section of the html, and, for each year, pushes headers, a
 // link banner, and then creates a calendar object for that year and uses it to generate the tables
 bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
-    // The implementation is stateless
-    using Implementation = GregorianImpl<MonthElement>;
-    Implementation implementation;
 
     std::vector<size_t> yearNumbers{year - 1, year, year + 1};
     std::vector<std::string> yearId;
@@ -52,6 +48,12 @@ bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate
 
     file << modifiedHtml;
     file << Util::bodyOpen() << "\n\n";
+
+    // Dependency injection: MonthElement is injected to GregorianImpl, and
+    // this implentation is implicitly injected into Calendar, which acts as the
+    // generic wrapper
+    using Implementation = GregorianImpl<MonthElement>;
+    Implementation implementation;
 
     for (size_t index = 0; index < yearNumbers.size(); ++index) {
         std::cout << "Creating html for year : " << yearNumbers[index] << std::endl;
@@ -75,8 +77,8 @@ bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate
         file << Util::tab2 << Util::divTagClose();
 
         // Finally, push out the divs from which the html will create the calendar tables
-        Calendar yearCalender(yearNumbers[index], implementation);
-        yearCalender.htmlPrint(file);
+        Calendar yearCalendar(yearNumbers[index], implementation);
+        yearCalendar.htmlPrint(file);
 
         file << Util::sectionClose() << "\n\n";
     }
@@ -95,4 +97,4 @@ bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate
     return true;
 }
 
-size_t getLowerBound() { return Util::gregYear; }
+size_t getLowerBound() { return GregorianImpl<MonthElement>::gregStartYear; }

@@ -6,7 +6,9 @@ set(APPLICATION_SOURCES
   app_main.cpp
   interface.cpp
   month_element.cpp
+  util.cpp
   )
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(calendar ${APPLICATION_SOURCES})
 set_property(TARGET calendar PROPERTY CXX_STANDARD 17)
