@@ -33,13 +33,13 @@ MonthElement::MonthElement(const std::string &monthName, size_t dateStart, size_
         addCell(item, params);
     }
 
-    // First row: populate the data rows, including blank cells
+    // First row: populate the data rows, including blank cells. (insert week labels on new rows)
     size_t week = weekNumber;
     size_t date = dateStart;
     for (size_t dataIndex = 0; dataIndex < m_tableDataRows * params.daysInAWeek; ++dataIndex) {
         std::string data;
-        if (m_contents.size() % m_tableColumns == 0) {
-            addCell(std::to_string(week++), params);
+        if (dataIndex % params.daysInAWeek == 0) {
+            addCell((date <= dateEnd) ? std::to_string(week++) : std::string(), params);
         }
         if (dataIndex >= monthStartDayIndex && date <= dateEnd) {
             data = std::to_string(date++);
