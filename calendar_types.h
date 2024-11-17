@@ -34,5 +34,4 @@ class Properties {
     const std::vector<CellType> dataType;
     const std::vector<CellType> headerType;
 };
-//} // namespace Cal
 #endif
