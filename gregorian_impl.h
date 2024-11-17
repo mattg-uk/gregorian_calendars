@@ -68,14 +68,6 @@ template <typename MonthType> class GregorianImpl {
 // ----------------------------------------------------------------------------
 
 template <typename MonthType>
-void GregorianImpl<MonthType>::htmlOut(std::iostream &stream,
-                                       const std::vector<MonthType> &months) {
-    for (const auto &month : months) {
-        month.htmlOut(stream);
-    }
-}
-
-template <typename MonthType>
 std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year) const {
 
     size_t yearStartIndex = getBaseIndex(year);

@@ -20,12 +20,15 @@ copies or substantial portions of the Software.
 #include <iostream>
 #include <vector>
 
+#include "calendar_types.h"
+
 // The Calendar is a wrapper to store the output from the chosen implementation,
 // upon instantiation the existance of the required functions will be verified.
 template <class IMPL> class Calendar {
   public:
     explicit Calendar(int year, IMPL &implementation);
     void htmlPrint(std::iostream &stream) const;
+    YearData getData();
 
   private:
     std::vector<typename IMPL::MonthType_t> m_months;
@@ -35,8 +38,13 @@ template <class IMPL>
 Calendar<IMPL>::Calendar(int year, IMPL &implementation)
     : m_months(implementation.populateMonths(year)) {}
 
-template <class IMPL> void Calendar<IMPL>::htmlPrint(std::iostream &stream) const {
-    IMPL::htmlOut(stream, m_months);
+// Get data generates a copy each time it is used to avoid lifetime issues
+template <class IMPL> YearData Calendar<IMPL>::getData() {
+    YearData months;
+    for (auto &month : m_months) {
+        months.emplace_back(month.getData());
+    }
+    return months;
 }
 
 #endif // CALENDAR_H

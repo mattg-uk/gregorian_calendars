@@ -7,31 +7,7 @@
 #include "month_element.h"
 #include "util.h"
 
-struct UtilMock {
-    MOCK_METHOD(std::string, monthAsHtmlString,
-                (const std::string &monthName, const DataStorage &data), (const));
-    static UtilMock *const get() { return mock; }
-
-  protected:
-    void set(UtilMock *const staticMock) { mock = staticMock; }
-
-  private:
-    static inline UtilMock *mock;
-};
-
-std::string Util::monthAsHtmlString(const std::string &monthName, const DataStorage &data) {
-    return UtilMock::get()->monthAsHtmlString(monthName, data);
-}
-
-// The underlying mock should be set in a scope outside of the Test Body or Mock
-// Constructor, but not be fully static. Otherwise, it leaks out of the test.
-class MonthTest : public ::testing::Test, private UtilMock {
-  public:
-    MonthTest() { UtilMock::set(&staticMock); }
-    UtilMock staticMock;
-};
-
-TEST_F(MonthTest, DataHandling) {
+TEST(MonthTest, DataHandling) {
     using namespace testing;
     // The (very) hyptothetical Davidian Calendar has 4 days per week, and 6 months a
     // year, and the days of the week are called, A, B, C, D. It's the 1000th year of
@@ -60,9 +36,8 @@ TEST_F(MonthTest, DataHandling) {
     // Expected outputs
     // Construct the vector that we expect MonthElement to hold and pass to Util.
     std::string expectedMonthName("Dave");
-    std::string expectedStreamState("Mock return value");
 
-    DataStorage expectedDataVector{
+    MonthData expectedDataVector{
         {CellType::Label, "Wk"},    {CellType::Label, "A"},     {CellType::Label, "B"},
         {CellType::Weekend1, "C"},  {CellType::Weekend2, "D"},  {CellType::Label, "11"},
         {CellType::Workday, ""},    {CellType::Workday, ""},    {CellType::Weekend1, "3"},
@@ -78,14 +53,7 @@ TEST_F(MonthTest, DataHandling) {
         {CellType::Workday, ""},    {CellType::Workday, ""},    {CellType::Weekend1, ""},
         {CellType::Weekend2, ""}};
 
-    // Set expectations and make the driving call
-    EXPECT_CALL(staticMock, monthAsHtmlString(expectedMonthName, expectedDataVector)).Times(1);
-    ON_CALL(staticMock, monthAsHtmlString)
-        .WillByDefault([&](const std::string &monthName, const DataStorage &data) {
-            return expectedStreamState;
-        });
-    std::stringstream actualStreamState;
-    testElement.htmlOut(actualStreamState);
-
-    EXPECT_EQ(expectedStreamState, actualStreamState.str());
+    auto [actualMonthName, actualDataVector] = testElement.getData();
+    EXPECT_EQ(expectedMonthName, actualMonthName);
+    EXPECT_EQ(expectedDataVector, actualDataVector);
 }

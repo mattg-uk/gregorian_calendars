@@ -16,10 +16,52 @@ copies or substantial portions of the Software.
 -------------------------------------------------------------------------------- */
 
 #include "util.h"
-#include <sstream>
 
-std::string Util::monthAsHtmlString(const std::string &monthName, const DataStorage &data) {
-    std::stringstream output;
+void Util::outputDocument(std::iostream &output, const std::string &htmlTemplate, size_t coreYear,
+                          const Years &data) {
+    outputDocumentHeaderHtml(output, htmlTemplate);
+    for (auto &year : data) {
+        Util::outputYearHeaderHtml(output, year.first, data);
+        Util::outputYearMonthsHtml(output, year.second);
+        output << Util::sectionClose() << "\n\n";
+    }
+    outputDocumentFooterHtml(output, coreYear);
+}
+
+void Util::outputDocumentHeaderHtml(std::iostream &output, const std::string &htmlTemplate) {
+    output << htmlTemplate;
+    output << Util::bodyOpen() << "\n\n";
+}
+
+void Util::outputYearHeaderHtml(std::iostream &output, size_t year, const Years &years) {
+
+    // Header for this year with coded ID for linkage
+    output << Util::headerOpen(yearId(year)) << "Calendar Year " << year << Util::headerClose()
+           << "\n\n";
+
+    output << Util::sectionOpen() << "\n";
+
+    // Year selector: years in order, with the current year hard-coded and the others as links
+    output << Util::tab2 << Util::divTagOpen("year_selector") + "\n";
+    for (auto &linkYear : years) {
+        if (linkYear.first == year) {
+            output << Util::tab4 << year << "\n";
+        } else {
+            output << Util::tab4 << Util::aTagOpen(yearHref(linkYear.first)) << linkYear.first
+                   << Util::aTagClose() << "\n";
+        }
+    }
+    output << Util::tab2 << Util::divTagClose();
+}
+
+void Util::outputYearMonthsHtml(std::iostream &output, const YearData &data) {
+    for (auto &month : data) {
+        outputMonthHtml(output, month.first, month.second);
+    }
+}
+
+void Util::outputMonthHtml(std::iostream &output, const std::string &monthName,
+                           const MonthData &data) {
 
     output << Util::tab2 << Util::monOpen() << '\n';
     output << Util::tab4 << Util::divTagOpen("month-name") << monthName << Util::divTagClose()
@@ -31,5 +73,17 @@ std::string Util::monthAsHtmlString(const std::string &monthName, const DataStor
     }
     output << Util::tab4 << Util::divTagClose() << '\n';
     output << Util::tab2 << Util::monClose() << '\n';
-    return output.str();
+}
+
+void Util::outputDocumentFooterHtml(std::iostream &output, size_t viewStartYear) {
+    // Close out the final parts of the html
+    output << Util::footerOpen() << Util::footerClose() << "\n\n";
+    output << Util::bodyClose() << "\n\n";
+
+    // Add a tiny script to move the html view to the centre year upon opening the html page
+    output << Util::scriptOpen() << "\n";
+    output << Util::tab2 << Util::locationReplace(Util::yearHref(viewStartYear)) << "\n";
+    output << Util::scriptClose() << "\n\n";
+
+    output << Util::htmlClose() << "\n";
 }

@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------------------ 
+/* ------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Matthew Nathan Green
@@ -17,17 +17,19 @@ copies or substantial portions of the Software.
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-// This file should be included by those wishing to generate Gregorian calendars and write them out to .html
+// This file should be included by those wishing to generate Gregorian calendars and write them out
+// to .html
 
-// It requires an open file fstream to write to, and a .html template pre-amble, presented as a string
+// It requires an open file fstream to write to, and a .html template pre-amble, presented as a
+// string
 
 // The .cpp acts as the dependency injection site.
 
-#include <string>
 #include <fstream>
+#include <string>
 
 // Create 3 adjacent Gregorian calenders adjacent and including 'year', print to 'file' as html
-bool generateCalendars(std::fstream& file, size_t year, std::string htmlTemplate);
+bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate);
 
 // Gregorian supplies a specifically Gregorian implementation of the calendar, no years before 1582
 size_t getLowerBound();

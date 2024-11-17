@@ -22,7 +22,13 @@ copies or substantial portions of the Software.
 // namespace Cal {
 enum class CellType { Label, Workday, Weekend1, Weekend2 };
 
-using DataStorage = std::vector<std::pair<CellType, std::string>>;
+using MonthData = std::vector<std::pair<CellType, std::string>>;
+using MonthName = std::string;
+
+using YearData = std::vector<std::pair<MonthName, MonthData>>;
+using Year = std::pair<size_t, YearData>;
+
+using Years = std::vector<Year>;
 
 // Allows a completely generic definition of a calender
 class Properties {

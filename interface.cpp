@@ -23,76 +23,22 @@ copies or substantial portions of the Software.
 
 #include "util.h"
 
-#include <regex>
-
-// This function pushes out the style section of the html, and, for each year, pushes headers, a
-// link banner, and then creates a calendar object for that year and uses it to generate the tables
+// The GregorianImpl class generates data that is formatted by MonthElements and
+// stored in Calendar objects.
+// That data is retrieved and exported to Util which handles all Html formatting.
 bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
 
-    std::vector<size_t> yearNumbers{year - 1, year, year + 1};
-    std::vector<std::string> yearId;
-    std::vector<std::string> yearHref;
+    std::vector<size_t> years{year - 1, year, year + 1};
 
-    // Populate these containers
-    for (auto number : yearNumbers) {
-        yearId.push_back(std::string("year_") + std::to_string(number));
-        yearHref.push_back(std::string("#") + yearId.back());
+    // Injected implementation: this does the Gregorian calculations
+    GregorianImpl<MonthElement> implementation;
+    Years data;
+
+    for (auto generationYear : years) {
+        Calendar yearCalendar(generationYear, implementation);
+        data.emplace_back(generationYear, yearCalendar.getData());
     }
-    // This is the href which will be jumped to upon opening the page
-    std::string openingHref = yearHref[1];
-
-    // Fix the title, creates a new string then moves it onto the old
-    std::string title = "Year " + std::to_string(year) + " Calendar";
-    std::string modifiedHtml =
-        std::regex_replace(htmlTemplate, std::regex("Calendar Title"), title);
-
-    file << modifiedHtml;
-    file << Util::bodyOpen() << "\n\n";
-
-    // Dependency injection: MonthElement is injected to GregorianImpl, and
-    // this implentation is implicitly injected into Calendar, which acts as the
-    // generic wrapper
-    using Implementation = GregorianImpl<MonthElement>;
-    Implementation implementation;
-
-    for (size_t index = 0; index < yearNumbers.size(); ++index) {
-        std::cout << "Creating html for year : " << yearNumbers[index] << std::endl;
-
-        // Header for this year, coding in id so that it can be linked to
-        file << Util::headerOpen(yearId[index]) << "Calendar Year " << yearNumbers[index]
-             << Util::headerClose() << "\n\n";
-        file << Util::sectionOpen() << "\n";
-
-        // Year selector: years in order, with the current year hard-coded and the other two as
-        // links
-        file << Util::tab2 << Util::divTagOpen("year_selector") + "\n";
-        for (size_t subIndex = 0; subIndex < yearNumbers.size(); ++subIndex) {
-            if (subIndex == index) {
-                file << Util::tab4 << yearNumbers[subIndex] << "\n";
-            } else {
-                file << Util::tab4 << Util::aTagOpen(yearHref[subIndex]) << yearNumbers[subIndex]
-                     << Util::aTagClose() << "\n";
-            }
-        }
-        file << Util::tab2 << Util::divTagClose();
-
-        // Finally, push out the divs from which the html will create the calendar tables
-        Calendar yearCalendar(yearNumbers[index], implementation);
-        yearCalendar.htmlPrint(file);
-
-        file << Util::sectionClose() << "\n\n";
-    }
-
-    // Close out the final parts of the html - the file itself is closed in main by ~fstream()
-    file << Util::footerOpen() << Util::footerClose() << "\n\n";
-    file << Util::bodyClose() << "\n\n";
-
-    // Add a tiny script to move the html view to the centre year upon opening the html page
-    file << Util::scriptOpen() << "\n";
-    file << Util::tab2 << Util::locationReplace(openingHref) << "\n";
-    file << Util::scriptClose() << "\n\n";
-
-    file << Util::htmlClose() << "\n";
+    Util::outputDocument(file, htmlTemplate, year, data);
 
     return true;
 }

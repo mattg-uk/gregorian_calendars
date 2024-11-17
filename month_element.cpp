@@ -15,7 +15,6 @@ copies or substantial portions of the Software.
 -------------------------------------------------------------------------------- */
 
 #include "month_element.h"
-#include "util.h"
 #include <algorithm>
 
 MonthElement::MonthElement(const std::string &monthName, size_t dateStart, size_t dateEnd,
@@ -59,6 +58,6 @@ void MonthElement::addCell(const std::string &data, const Properties &params) {
     m_contents.emplace_back(cellType, data);
 }
 
-void MonthElement::htmlOut(std::iostream &stream) const {
-    stream << Util::monthAsHtmlString(m_monthName, m_contents);
+std::pair<std::string, MonthData> MonthElement::getData() const {
+    return std::pair(m_monthName, m_contents);
 }

@@ -18,7 +18,7 @@ copies or substantial portions of the Software.
 #define UTIL_H
 
 // This class contains common static methods that do not belong to one class but to the html
-// calender as a whole
+// calendar as a whole
 
 #include "calendar_types.h"
 #include <iostream>
@@ -27,9 +27,6 @@ copies or substantial portions of the Software.
 
 class Util {
   public:
-    // A leap year occurs if the year is divisible by 4, but not by 100, unless it is divisble by
-    // 400 - in which case it is
-
     // Create a html tag
     static std::string headerOpen(const std::string &id) {
         return std::string("<header id=\"") + id + "\">";
@@ -60,32 +57,46 @@ class Util {
 
     static std::string scriptOpen() { return "<script>"; }
     static std::string scriptClose() { return "</script>"; }
-    static std::string locationReplace(const std::string &hRef) {
-        return std::string("location.replace('") + hRef + "')";
-    }
 
     static std::string htmlOpen() { return "<html>"; }
     static std::string htmlClose() { return "</html>"; }
 
+    // ID and hRef helpers
+    static std::string locationReplace(const std::string &hRef) {
+        return std::string("location.replace('") + hRef + "')";
+    }
+    static std::string yearId(size_t year) { return std::string("year_") + std::to_string(year); }
+    static std::string yearHref(size_t year) { return std::string("#") + yearId(year); }
+
+    // html style constants
     static const inline std::string tab2 = std::string(2, ' ');
     static const inline std::string tab4 = std::string(4, ' ');
     static const inline std::string tab6 = std::string(6, ' ');
 
-    // These html class names are output directly into the html, and must match those used in the
-    // config file. These govern the style used in the ouput
     static const inline std::string classLabel = std::string("label");
     static const inline std::string classDay = std::string("day");
     static const inline std::string classSpec1 = std::string("spec1");
     static const inline std::string classSpec2 = std::string("spec2");
 
+    // Calendar specific html functions
     static const inline std::unordered_map<CellType, std::string> styleMap{
         {CellType::Label, classLabel},
         {CellType::Workday, classDay},
         {CellType::Weekend1, classSpec1},
         {CellType::Weekend2, classSpec2}};
-
     static std::string styleAsString(const CellType &style) { return styleMap.at(style); }
-    static std::string monthAsHtmlString(const std::string &monthName, const DataStorage &data);
-};
 
+    // Each calendar is headered by a banner that allows other years to be selected.
+    static void outputDocument(std::iostream &output, const std::string &htmlTemplate,
+                               size_t coreYear, const Years &data);
+
+    static void outputDocumentHeaderHtml(std::iostream &output, const std::string &htmlTemplate);
+    static void outputYearHeaderHtml(std::iostream &output, size_t calendarYear,
+                                     const Years &years);
+    static void outputYearMonthsHtml(std::iostream &output, const YearData &data);
+    static void outputMonthHtml(std::iostream &output, const std::string &monthName,
+                                const MonthData &data);
+
+    static void outputDocumentFooterHtml(std::iostream &output, size_t coreYear);
+};
 #endif // UTIL_H
