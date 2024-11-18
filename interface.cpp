@@ -17,16 +17,14 @@ copies or substantial portions of the Software.
 #include "interface.h"
 
 // Introduce the implementation dependencies and the calendar class
-#include "calendar.h"
 #include "gregorian_impl.h"
 #include "month_element.h"
 
 #include "util.h"
 
 // The GregorianImpl class generates data that is formatted by MonthElements and
-// stored in Calendar objects.
-// That data is retrieved and exported to Util which handles all Html formatting.
-bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
+// stored in generic objects. The call to Util exports html.
+void generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
 
     std::vector<size_t> years{year - 1, year, year + 1};
 
@@ -35,12 +33,8 @@ bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate
     Years data;
 
     for (auto generationYear : years) {
-        Calendar yearCalendar(generationYear, implementation);
-        data.push_back(yearCalendar.getData());
+        data.push_back(implementation.populateYear(generationYear));
     }
     Util::outputDocument(file, htmlTemplate, year, data);
-
-    return true;
 }
-
 size_t getLowerBound() { return GregorianImpl<MonthElement>::gregStartYear; }

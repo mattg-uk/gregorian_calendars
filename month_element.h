@@ -17,9 +17,7 @@ copies or substantial portions of the Software.
 #ifndef MONTH_ELEMENT_H
 #define MONTH_ELEMENT_H
 
-// A simple class to abstract the creation of individual month blocks in the calendar.
-
-// The implementation stores a vector of 'cells' which contain headers, week numbers, dates
+// The implementation returns a vector of 'cells' which contain headers, week numbers, dates
 // and blank spaces.
 
 #include <string>
@@ -28,7 +26,6 @@ copies or substantial portions of the Software.
 
 class MonthElement {
   public:
-    // End range is one past highest value
     explicit MonthElement(const Properties &params);
 
     Month operator()(const std::string &monthName, size_t dateStart, size_t dateEnd,

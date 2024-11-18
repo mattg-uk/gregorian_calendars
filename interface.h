@@ -29,7 +29,7 @@ copies or substantial portions of the Software.
 #include <string>
 
 // Create 3 adjacent Gregorian calenders adjacent and including 'year', print to 'file' as html
-bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate);
+void generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate);
 
 // Gregorian supplies a specifically Gregorian implementation of the calendar, no years before 1582
 size_t getLowerBound();

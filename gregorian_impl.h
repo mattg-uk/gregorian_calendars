@@ -24,7 +24,6 @@ copies or substantial portions of the Software.
 // This class ITSELF must leverage a month class, but THIS class should be testable independently
 // of that, so the month class itself is parametric.
 
-#include <iostream>
 #include <vector>
 
 #include "calendar_types.h"
@@ -47,11 +46,10 @@ template <typename MonthType> class GregorianImpl {
          CellType::Label, CellType::Weekend1, CellType::Weekend2},
     };
 
-    static void htmlOut(std::iostream &stream, const std::vector<MonthType_t> &months);
-    Year populateMonths(int year) const;
+    Year populateYear(int year) const;
 
     size_t getBaseIndex(int year) const;
-
+    bool isLeapYear(int year) const;
     std::pair<size_t, size_t> validate(size_t year, size_t monthIndex, size_t endRange) const;
 
     // These indices define the start of the Gregorian calendar
@@ -61,13 +59,12 @@ template <typename MonthType> class GregorianImpl {
 
     // used in leap year calcs
     static const size_t indexFebruary = 1;
-    bool isLeapYear(int year) const;
 };
 
 // TEMPLATE IMPLEMENTATION
 // ----------------------------------------------------------------------------
 
-template <typename MonthType> Year GregorianImpl<MonthType>::populateMonths(int year) const {
+template <typename MonthType> Year GregorianImpl<MonthType>::populateYear(int year) const {
 
     size_t yearStartIndex = getBaseIndex(year);
 
