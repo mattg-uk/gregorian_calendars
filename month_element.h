@@ -29,16 +29,15 @@ copies or substantial portions of the Software.
 class MonthElement {
   public:
     // End range is one past highest value
-    explicit MonthElement(const std::string &monthName, size_t dateStart, size_t dateRangeEnd,
-                          size_t monthStartIndex, size_t weekNumber, const Properties &params);
+    explicit MonthElement(const Properties &params);
 
-    std::pair<std::string, MonthData> getData() const;
+    Month operator()(const std::string &monthName, size_t dateStart, size_t dateEnd,
+                     size_t monthStartDayIndex, size_t weekNumber) const;
 
   private:
-    void addCell(const std::string &data, const Properties &params);
+    void addCell(const std::string &celldata, MonthData &data) const;
 
-    MonthData m_contents;
-    std::string m_monthName;
+    Properties properties;
     size_t m_tableColumns;
     size_t m_tableDataRows;
 };

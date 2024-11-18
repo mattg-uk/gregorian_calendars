@@ -48,7 +48,7 @@ template <typename MonthType> class GregorianImpl {
     };
 
     static void htmlOut(std::iostream &stream, const std::vector<MonthType_t> &months);
-    std::vector<MonthType> populateMonths(int year) const;
+    Year populateMonths(int year) const;
 
     size_t getBaseIndex(int year) const;
 
@@ -67,12 +67,15 @@ template <typename MonthType> class GregorianImpl {
 // TEMPLATE IMPLEMENTATION
 // ----------------------------------------------------------------------------
 
-template <typename MonthType>
-std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year) const {
+template <typename MonthType> Year GregorianImpl<MonthType>::populateMonths(int year) const {
 
     size_t yearStartIndex = getBaseIndex(year);
 
-    std::vector<MonthType> months;
+    // Create a parameterized factory function-object and a Year with an empty data vector
+    MonthType generator{properties};
+    Year data{year, YearData()};
+
+    auto &months = data.second;
     for (size_t monthIndex = 0; monthIndex < 12; ++monthIndex) {
 
         size_t monthEnd = properties.daysPerMonth[monthIndex];
@@ -95,10 +98,10 @@ std::vector<MonthType> GregorianImpl<MonthType>::populateMonths(int year) const 
         size_t monthStartDayIndex =
             (yearStartIndex + monthStartOffset) % properties.daysInAWeek + (dateStart - 1);
 
-        months.emplace_back(properties.monthNames[monthIndex], dateStart, dateEnd,
-                            monthStartDayIndex, monthStartWeek, properties);
+        months.push_back(generator(properties.monthNames[monthIndex], dateStart, dateEnd,
+                                   monthStartDayIndex, monthStartWeek));
     }
-    return months;
+    return data;
 }
 
 // A leap year occurs if the year is divisible by 4, but not by 100, unless it is divisble by 400 -

@@ -36,7 +36,7 @@ bool generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate
 
     for (auto generationYear : years) {
         Calendar yearCalendar(generationYear, implementation);
-        data.emplace_back(generationYear, yearCalendar.getData());
+        data.push_back(yearCalendar.getData());
     }
     Util::outputDocument(file, htmlTemplate, year, data);
 

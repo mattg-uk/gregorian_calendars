@@ -24,6 +24,7 @@ enum class CellType { Label, Workday, Weekend1, Weekend2 };
 
 using MonthData = std::vector<std::pair<CellType, std::string>>;
 using MonthName = std::string;
+using Month = std::pair<MonthName, MonthData>;
 
 using YearData = std::vector<std::pair<MonthName, MonthData>>;
 using Year = std::pair<size_t, YearData>;

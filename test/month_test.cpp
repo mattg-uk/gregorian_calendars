@@ -30,8 +30,7 @@ TEST(MonthTest, DataHandling) {
                               CellType::Weekend2}};
 
     // System under Test
-    MonthElement testElement("Dave", size_t(3), size_t(21), size_t(2), size_t(11),
-                             davidianCalendar);
+    MonthElement testElement(davidianCalendar);
 
     // Expected outputs
     // Construct the vector that we expect MonthElement to hold and pass to Util.
@@ -53,7 +52,8 @@ TEST(MonthTest, DataHandling) {
         {CellType::Workday, ""},    {CellType::Workday, ""},    {CellType::Weekend1, ""},
         {CellType::Weekend2, ""}};
 
-    auto [actualMonthName, actualDataVector] = testElement.getData();
+    auto [actualMonthName, actualDataVector] =
+        testElement("Dave", size_t(3), size_t(21), size_t(2), size_t(11));
     EXPECT_EQ(expectedMonthName, actualMonthName);
     EXPECT_EQ(expectedDataVector, actualDataVector);
 }

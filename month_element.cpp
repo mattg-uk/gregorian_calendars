@@ -17,47 +17,48 @@ copies or substantial portions of the Software.
 #include "month_element.h"
 #include <algorithm>
 
-MonthElement::MonthElement(const std::string &monthName, size_t dateStart, size_t dateEnd,
-                           size_t monthStartDayIndex, size_t weekNumber, const Properties &params)
-    : m_monthName{monthName} {
+MonthElement::MonthElement(const Properties &params) : properties(params) {
 
     // This will throw an exception if there is not at least one month
-    size_t longestMonth = *std::max_element(params.daysPerMonth.begin(), params.daysPerMonth.end());
+    size_t longestMonth =
+        *std::max_element(properties.daysPerMonth.begin(), properties.daysPerMonth.end());
 
-    m_tableColumns = params.daysInAWeek + 1;
-    m_tableDataRows = std::max(size_t(1), (longestMonth - 2) / params.daysInAWeek + 2);
+    m_tableColumns = properties.daysInAWeek + 1;
+    m_tableDataRows = std::max(size_t(1), (longestMonth - 2) / properties.daysInAWeek + 2);
+}
+
+void MonthElement::addCell(const std::string &celldata, MonthData &data) const {
+    auto cellIndex = data.size();
+    auto cellColumn = cellIndex % m_tableColumns;
+    CellType cellType = cellIndex < m_tableColumns ? properties.headerType[cellColumn]
+                                                   : properties.dataType[cellColumn];
+    data.emplace_back(cellType, celldata);
+}
+
+Month MonthElement::operator()(const std::string &monthName, size_t dateStart, size_t dateEnd,
+                               size_t monthStartDayIndex, size_t weekNumber) const {
+
+    Month month;
+    month.first = monthName;
+    auto &data = month.second;
 
     // Populate headers
-    for (const auto &item : params.headerNames) {
-        addCell(item, params);
+    for (const auto &item : properties.headerNames) {
+        addCell(item, data);
     }
 
-    // First row: populate the data rows, including blank cells. (insert week labels on new rows)
+    // Populate the data rows, including blank cells. (insert week labels on new rows)
     size_t week = weekNumber;
     size_t date = dateStart;
-    for (size_t dataIndex = 0; dataIndex < m_tableDataRows * params.daysInAWeek; ++dataIndex) {
-        std::string data;
-        if (dataIndex % params.daysInAWeek == 0) {
-            addCell((date <= dateEnd) ? std::to_string(week++) : std::string(), params);
+    for (size_t dataIndex = 0; dataIndex < m_tableDataRows * properties.daysInAWeek; ++dataIndex) {
+        std::string celldata;
+        if (dataIndex % properties.daysInAWeek == 0) {
+            addCell((date <= dateEnd) ? std::to_string(week++) : std::string(), data);
         }
         if (dataIndex >= monthStartDayIndex && date <= dateEnd) {
-            data = std::to_string(date++);
+            celldata = std::to_string(date++);
         }
-        addCell(data, params);
+        addCell(celldata, month.second);
     }
-}
-
-void MonthElement::addCell(const std::string &data, const Properties &params) {
-    size_t cellIndex = m_contents.size();
-    CellType cellType;
-    if (cellIndex < m_tableColumns) {
-        cellType = params.headerType[cellIndex];
-    } else {
-        cellType = params.dataType[cellIndex % m_tableColumns];
-    }
-    m_contents.emplace_back(cellType, data);
-}
-
-std::pair<std::string, MonthData> MonthElement::getData() const {
-    return std::pair(m_monthName, m_contents);
+    return month;
 }
