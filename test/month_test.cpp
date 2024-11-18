@@ -1,11 +1,9 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <sstream>
 #include <vector>
 
 #include "month_element.h"
-#include "util.h"
 
 TEST(MonthTest, DataHandling) {
     using namespace testing;
