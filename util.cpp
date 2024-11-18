@@ -51,7 +51,7 @@ void Util::outputYearHeaderHtml(std::iostream &output, size_t year, const Years 
                    << Util::aTagClose() << "\n";
         }
     }
-    output << Util::tab2 << Util::divTagClose();
+    output << Util::tab2 << Util::divTagClose() << "\n";
 }
 
 void Util::outputYearMonthsHtml(std::iostream &output, const YearData &data) {
