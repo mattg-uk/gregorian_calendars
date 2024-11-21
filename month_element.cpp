@@ -53,12 +53,16 @@ Month MonthElement::operator()(const std::string &monthName, size_t dateStart, s
     for (size_t dataIndex = 0; dataIndex < m_tableDataRows * properties.daysInAWeek; ++dataIndex) {
         std::string celldata;
         if (dataIndex % properties.daysInAWeek == 0) {
-            addCell((date <= dateEnd) ? std::to_string(week++) : std::string(), data);
+            if (date <= dateEnd) {
+                addCell(std::to_string(week++), data);
+            } else {
+                addCell(std::string(), data);
+            }
         }
         if (dataIndex >= monthStartDayIndex && date <= dateEnd) {
             celldata = std::to_string(date++);
         }
-        addCell(celldata, month.second);
+        addCell(celldata, data);
     }
     return month;
 }
