@@ -19,6 +19,7 @@ copies or substantial portions of the Software.
 
 #include <string>
 #include <vector>
+
 // namespace Cal {
 enum class CellType { Label, Workday, Weekend1, Weekend2 };
 
@@ -27,7 +28,8 @@ using MonthName = std::string;
 using Month = std::pair<MonthName, MonthData>;
 
 using YearData = std::vector<std::pair<MonthName, MonthData>>;
-using Year = std::pair<size_t, YearData>;
+using YearId = int;
+using Year = std::pair<YearId, YearData>;
 
 using Years = std::vector<Year>;
 
@@ -41,4 +43,13 @@ class Properties {
     const std::vector<CellType> dataType;
     const std::vector<CellType> headerType;
 };
+
+// The only truly common purpose of the generators is to make year data
+class Generator {
+  public:
+    virtual Year populateYear(int year) const = 0;
+    virtual int getLowerBound() const { return 0; }
+    virtual int getUpperBound() const { return 0; }
+};
+
 #endif
