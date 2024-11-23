@@ -1,6 +1,6 @@
 
 #include "calendar_types.h"
-#include "util.h"
+#include "html_writer.h"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <sstream>
@@ -55,7 +55,7 @@ TEST_F(UtilTest, YearHeader) {
     expectedOutput += "    <a href=\"#year_2500\">2500</a>\n";
     expectedOutput += "  </div>\n";
 
-    Util::outputYearHeaderHtml(testStreamOutput, 2000, testYears);
+    HtmlWriter::outputYearHeaderHtml(testStreamOutput, 2000, testYears);
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
@@ -76,7 +76,7 @@ TEST_F(UtilTest, MonthHtml) {
     expectedOutput += "    </div>\n";
     expectedOutput += "  </mon>\n";
 
-    Util::outputMonthHtml(testStreamOutput, testMonthName, testMonthData);
+    HtmlWriter::outputMonthHtml(testStreamOutput, testMonthName, testMonthData);
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
@@ -87,7 +87,7 @@ TEST_F(UtilTest, YearMonthsHtml) {
     // repeatedly
     std::string expectedOutput = expectedYearMonths();
 
-    Util::outputYearMonthsHtml(testStreamOutput, testYearData);
+    HtmlWriter::outputYearMonthsHtml(testStreamOutput, testYearData);
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
@@ -102,7 +102,7 @@ TEST_F(UtilTest, DocumentFooter) {
     expectedOutput += "</script>\n\n";
     expectedOutput += "</html>\n";
 
-    Util::outputDocumentFooterHtml(testStreamOutput, 2000);
+    HtmlWriter::outputDocumentFooterHtml(testStreamOutput, 2000);
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
@@ -154,6 +154,7 @@ TEST_F(UtilTest, outputDocument) {
     expectedOutput += "</script>\n\n";
     expectedOutput += "</html>\n";
 
-    Util::outputDocument(testStreamOutput, testTemplate, 2000, testYears);
+    HtmlWriter writer;
+    writer.outputDocument(testStreamOutput, testTemplate, 2000, testYears);
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }

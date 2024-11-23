@@ -16,25 +16,30 @@ copies or substantial portions of the Software.
 
 #include "interface.h"
 
-// Introduce the implementation dependencies and the calendar class
+#include "calendar_types.h"
 #include "gregorian_impl.h"
+#include "html_writer.h"
 #include "month_element.h"
 
-#include "util.h"
+void generateDocumentFromImplementation(Generator *implementation, std::iostream &file,
+                                        size_t coreYear, std::string htmlTemplate,
+                                        HtmlWriter *writer) {
 
-// The GregorianImpl class generates data that is formatted by MonthElements and
-// stored in generic objects. The call to Util exports html.
-void generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate) {
+    std::vector<size_t> years{coreYear - 1, coreYear, coreYear + 1};
 
-    std::vector<size_t> years{year - 1, year, year + 1};
+    Years data;
+    for (auto generationYear : years) {
+        data.push_back(implementation->populateYear(generationYear));
+    }
+    writer->outputDocument(file, htmlTemplate, coreYear, data);
+}
+
+void generateCalendarsGregorian(std::iostream &file, size_t year, std::string htmlTemplate) {
 
     // Injected implementation: this does the Gregorian calculations
     GregorianImpl<MonthElement> implementation;
-    Years data;
-
-    for (auto generationYear : years) {
-        data.push_back(implementation.populateYear(generationYear));
-    }
-    Util::outputDocument(file, htmlTemplate, year, data);
+    HtmlWriter writer;
+    generateDocumentFromImplementation(&implementation, file, year, htmlTemplate, &writer);
 }
-size_t getLowerBound() { return GregorianImpl<MonthElement>::gregStartYear; }
+
+size_t getLowerGregorianBound() { return GregorianImpl<MonthElement>::gregStartYear; }

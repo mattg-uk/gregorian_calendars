@@ -6,7 +6,7 @@ set(APPLICATION_SOURCES
   app_main.cpp
   interface.cpp
   month_element.cpp
-  util.cpp
+  html_writer.cpp
   )
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

@@ -29,10 +29,9 @@ copies or substantial portions of the Software.
 #include "calendar_types.h"
 
 // Decouple the dependency on the Month class used
-template <typename MonthType> class GregorianImpl {
+template <typename MonthType> class GregorianImpl : public Generator {
   public:
     typedef MonthType MonthType_t;
-
     // These properties are specific to (but not unique to) an English Language Gregorian calendar
     static const inline Properties properties{
         7,

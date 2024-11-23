@@ -25,8 +25,12 @@ copies or substantial portions of the Software.
 #include <string>
 #include <unordered_map>
 
-class Util {
+class HtmlWriter {
   public:
+    // Each calendar is headered by a banner that allows other years to be selected.
+    void outputDocument(std::iostream &output, const std::string &htmlTemplate, size_t coreYear,
+                        const Years &data);
+
     // Create a html tag
     static std::string headerOpen(const std::string &id) {
         return std::string("<header id=\"") + id + "\">";
@@ -85,10 +89,6 @@ class Util {
         {CellType::Weekend1, classSpec1},
         {CellType::Weekend2, classSpec2}};
     static std::string styleAsString(const CellType &style) { return styleMap.at(style); }
-
-    // Each calendar is headered by a banner that allows other years to be selected.
-    static void outputDocument(std::iostream &output, const std::string &htmlTemplate,
-                               size_t coreYear, const Years &data);
 
     static void outputDocumentHeaderHtml(std::iostream &output, const std::string &htmlTemplate);
     static void outputYearHeaderHtml(std::iostream &output, size_t calendarYear,

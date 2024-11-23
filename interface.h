@@ -23,15 +23,12 @@ copies or substantial portions of the Software.
 // It requires an open file fstream to write to, and a .html template pre-amble, presented as a
 // string
 
-// The .cpp acts as the dependency injection site.
-
-#include <fstream>
+#include <iostream>
 #include <string>
 
 // Create 3 adjacent Gregorian calenders adjacent and including 'year', print to 'file' as html
-void generateCalendars(std::fstream &file, size_t year, std::string htmlTemplate);
+void generateCalendarsGregorian(std::iostream &file, size_t year, std::string htmlTemplate);
 
-// Gregorian supplies a specifically Gregorian implementation of the calendar, no years before 1582
-size_t getLowerBound();
+size_t getLowerGregorianBound();
 
 #endif // INTERFACE_H

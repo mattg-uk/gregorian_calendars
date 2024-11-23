@@ -14,9 +14,9 @@ add_executable(test_month_element
     ${CMAKE_SOURCE_DIR}/month_element.cpp
 )
 
-add_executable(test_util
-    util_test.cpp
-    ${CMAKE_SOURCE_DIR}/util.cpp
+add_executable(test_html_writer
+    html_writer_test.cpp
+    ${CMAKE_SOURCE_DIR}/html_writer.cpp
 )
 
 # This test includes a template, so no production source is required
@@ -24,13 +24,21 @@ add_executable(test_gregorian
     gregorian_test.cpp
 )
 
+add_executable(test_interface
+    interface_test.cpp
+    ${CMAKE_SOURCE_DIR}/interface.cpp
+    ${CMAKE_SOURCE_DIR}/html_writer.cpp
+)
+
 target_link_libraries(test_month_element gmock gtest gtest_main) 
-target_link_libraries(test_util gmock gtest gtest_main)
+target_link_libraries(test_html_writer gmock gtest gtest_main)
 target_link_libraries(test_gregorian gmock gtest gtest_main)
+target_link_libraries(test_interface gmock gtest gtest_main)
 
 gtest_discover_tests(test_month_element)
-gtest_discover_tests(test_util)
+gtest_discover_tests(test_html_writer)
 gtest_discover_tests(test_gregorian)
+gtest_discover_tests(test_interface)
 
 # This section adds coverage the unit tests -------------------------------
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -52,6 +60,7 @@ setup_target_for_coverage_lcov(
       --dark-mode
     DEPENDENCIES
       test_month_element
-      test_util
+      test_html_writer
       test_gregorian 
+      test_interface
 )

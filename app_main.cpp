@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         case 'y': {
             std::stringstream parse{optarg};
             parse >> year;
-            halt |= (parse.fail() || year < getLowerBound());
+            halt |= (parse.fail() || year < getLowerGregorianBound());
             break;
         }
         case 'o':
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Creating file: " << filepath.string() << " for year " << year << std::endl;
 
-    generateCalendars(file, year, style.str());
+    generateCalendarsGregorian(file, year, style.str());
 
     return 0;
 }
