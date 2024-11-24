@@ -1,3 +1,4 @@
+
 /* ------------------------------------------------------------------------------
 MIT License
 
@@ -13,29 +14,21 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 -------------------------------------------------------------------------------- */
-
-#ifndef MONTH_ELEMENT_H
-#define MONTH_ELEMENT_H
-
-// The implementation returns a vector of 'cells' which contain headers, week numbers, dates
-// and blank spaces.
+#ifndef GENERATE_H
+#define GENERATE_H
 
 #include "calendar_types.h"
-#include <string>
 
-class MonthElement {
-  public:
-    explicit MonthElement(const Properties &params);
+template <typename Generator, typename Writer>
+void generate(Generator &implementation, std::iostream &file, size_t coreYear,
+              std::string htmlTemplate, Writer &writer) {
 
-    Month operator()(const std::string &monthName, size_t dateStart, size_t dateEnd,
-                     size_t monthStartDayIndex, size_t weekNumber) const;
+    std::vector<size_t> years{coreYear - 1, coreYear, coreYear + 1};
 
-  private:
-    void addCell(const std::string &celldata, MonthData &data) const;
-
-    Properties properties;
-    size_t m_tableColumns;
-    size_t m_tableDataRows;
-};
-
-#endif // MONTH_ELEMENT_H
+    Years data;
+    for (auto generationYear : years) {
+        data.push_back(implementation.populateYear(generationYear));
+    }
+    writer.outputDocument(file, htmlTemplate, coreYear, data);
+}
+#endif // GENERATE_H

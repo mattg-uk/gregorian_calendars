@@ -22,7 +22,7 @@ copies or substantial portions of the Software.
 #include <regex>
 #include <sstream>
 
-#include "interface.h"
+#include "wrapper.h"
 
 namespace fs = std::filesystem;
 

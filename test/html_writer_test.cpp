@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-class UtilTest : public ::testing::Test {
+class HtmlTest : public ::testing::Test {
   public:
     const MonthData testMonthData = {{CellType::Label, "Arbitrary"},
                                      {CellType::Workday, "Test"},
@@ -42,7 +42,7 @@ class UtilTest : public ::testing::Test {
     }
 };
 
-TEST_F(UtilTest, YearHeader) {
+TEST_F(HtmlTest, YearHeader) {
     std::stringstream testStreamOutput;
 
     std::string expectedOutput;
@@ -59,7 +59,7 @@ TEST_F(UtilTest, YearHeader) {
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
-TEST_F(UtilTest, MonthHtml) {
+TEST_F(HtmlTest, MonthHtml) {
     // The test needs to verify the output format and contents: a month open tag, a div with
     // the month name, and a container filled with test data.
     std::stringstream testStreamOutput;
@@ -80,7 +80,7 @@ TEST_F(UtilTest, MonthHtml) {
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
-TEST_F(UtilTest, YearMonthsHtml) {
+TEST_F(HtmlTest, YearMonthsHtml) {
     std::stringstream testStreamOutput;
 
     // The expected year months goes in a function because it will be needed
@@ -91,7 +91,7 @@ TEST_F(UtilTest, YearMonthsHtml) {
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
-TEST_F(UtilTest, DocumentFooter) {
+TEST_F(HtmlTest, DocumentFooter) {
     std::stringstream testStreamOutput;
 
     std::string expectedOutput;
@@ -106,7 +106,7 @@ TEST_F(UtilTest, DocumentFooter) {
     EXPECT_EQ(testStreamOutput.str(), expectedOutput);
 }
 
-TEST_F(UtilTest, outputDocument) {
+TEST_F(HtmlTest, outputDocument) {
 
     //  The test is to ensure that the template, body directives, year headers,
     //  data, section close, document footer appear in the correct order.

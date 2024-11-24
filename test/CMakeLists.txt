@@ -14,31 +14,35 @@ add_executable(test_month_element
     ${CMAKE_SOURCE_DIR}/month_element.cpp
 )
 
+add_executable(test_gregorian_impl
+    gregorian_impl_test.cpp
+)
+
 add_executable(test_html_writer
     html_writer_test.cpp
     ${CMAKE_SOURCE_DIR}/html_writer.cpp
 )
 
-# This test includes a template, so no production source is required
-add_executable(test_gregorian
-    gregorian_test.cpp
+add_executable(test_generate
+    generate_test.cpp
 )
 
-add_executable(test_interface
-    interface_test.cpp
-    ${CMAKE_SOURCE_DIR}/interface.cpp
-    ${CMAKE_SOURCE_DIR}/html_writer.cpp
+add_executable(test_wrapper
+    wrapper_test.cpp
+    ${CMAKE_SOURCE_DIR}/wrapper.cpp
 )
 
 target_link_libraries(test_month_element gmock gtest gtest_main) 
+target_link_libraries(test_gregorian_impl gmock gtest gtest_main)
 target_link_libraries(test_html_writer gmock gtest gtest_main)
-target_link_libraries(test_gregorian gmock gtest gtest_main)
-target_link_libraries(test_interface gmock gtest gtest_main)
+target_link_libraries(test_generate gmock gtest gtest_main)
+target_link_libraries(test_wrapper gmock gtest gtest_main)
 
 gtest_discover_tests(test_month_element)
+gtest_discover_tests(test_gregorian_impl)
 gtest_discover_tests(test_html_writer)
-gtest_discover_tests(test_gregorian)
-gtest_discover_tests(test_interface)
+gtest_discover_tests(test_generate)
+gtest_discover_tests(test_wrapper)
 
 # This section adds coverage the unit tests -------------------------------
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -52,6 +56,7 @@ setup_target_for_coverage_lcov(
     EXECUTABLE ctest
     LCOV_ARGS
       --ignore-errors inconsistent
+      --ignore-errors mismatch
       --rc branch_coverage=1
     GENHTML_ARGS
       --branch-coverage
@@ -60,7 +65,8 @@ setup_target_for_coverage_lcov(
       --dark-mode
     DEPENDENCIES
       test_month_element
+      test_gregorian_impl
       test_html_writer
-      test_gregorian 
-      test_interface
+      test_generate
+      test_wrapper 
 )

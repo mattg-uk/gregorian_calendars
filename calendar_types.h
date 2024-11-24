@@ -44,12 +44,4 @@ class Properties {
     const std::vector<CellType> headerType;
 };
 
-// The only truly common purpose of the generators is to make year data
-class Generator {
-  public:
-    virtual Year populateYear(int year) const = 0;
-    virtual int getLowerBound() const { return 0; }
-    virtual int getUpperBound() const { return 0; }
-};
-
 #endif

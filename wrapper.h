@@ -14,8 +14,9 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 -------------------------------------------------------------------------------- */
 
-#ifndef INTERFACE_H
-#define INTERFACE_H
+#ifndef WRAPPER_H
+#define WRAPPER_H
+
 
 // This file should be included by those wishing to generate Gregorian calendars and write them out
 // to .html
@@ -31,4 +32,4 @@ void generateCalendarsGregorian(std::iostream &file, size_t year, std::string ht
 
 size_t getLowerGregorianBound();
 
-#endif // INTERFACE_H
+#endif // WRAPPER_H
