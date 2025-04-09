@@ -6,7 +6,8 @@ This project will build a calendar application using cmake.
 
 In 2022, I was asked to produce an application that outputs Gregorian calendars (i.e. standard modern calendars) in html format.
 This was as a challenge problem - but it is not as simple as it seems at first, and it was subsequently withdrawn from that company's
-interview process. However, it serves as a convenient demonstration project for dependency injection based testing, so here it is.
+interview process. However, it serves as a convenient demonstration project for dependency injection based testing, so, with some
+refactoring, here it is.
 
 ### Constraints
 
