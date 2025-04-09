@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------- MIT License
 
-Copyright (c) 2022 Matthew Nathan Green
+Copyright (c) 2022-2025 Matthew Nathan Green
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,9 +52,9 @@ template <typename MonthType> class GregorianImpl {
     std::pair<size_t, size_t> validate(size_t year, size_t monthIndex, size_t endRange) const;
 
     // These indices define the start of the Gregorian calendar
-    static const size_t gregStartYear = 1582;
-    static const size_t gregStartMonthIndex = 9;
-    static const size_t gregStartDate = 15;
+    static const size_t calenderStartYear = 1582;
+    static const size_t calendarStartMonthIndex = 9;
+    static const size_t calendarStartDate = 15;
 
     // used in leap year calcs
     static const size_t indexFebruary = 1;
@@ -111,7 +111,7 @@ template <typename MonthType> size_t GregorianImpl<MonthType>::getBaseIndex(int 
     // Index changes by 365 % 7, i.e. +1 per year; +2 for a leap year
 
     size_t baseIndex = 4;
-    for (int yearIndex = gregStartYear; yearIndex < year; ++yearIndex) {
+    for (int yearIndex = calenderStartYear; yearIndex < year; ++yearIndex) {
         baseIndex += 1 + static_cast<size_t>(isLeapYear(yearIndex));
     }
     return baseIndex % 7;
@@ -123,13 +123,13 @@ std::pair<size_t, size_t> GregorianImpl<MonthType>::validate(size_t year, size_t
                                                              size_t endDate) const {
 
     // Use all - it is after the Gregorian Start Month
-    if (year > gregStartYear || year == gregStartYear && monthIndex > gregStartMonthIndex) {
+    if (year > calenderStartYear || year == calenderStartYear && monthIndex > calendarStartMonthIndex) {
         return {1, endDate};
     }
 
     // Use none, the year is pre-Gregorian or the month is pre-Gregorian within
     // the Gregorian Year
-    if (year < gregStartYear || monthIndex < gregStartMonthIndex) {
+    if (year < calenderStartYear || monthIndex < calendarStartMonthIndex) {
         return {endDate, endDate - 1};
     }
 

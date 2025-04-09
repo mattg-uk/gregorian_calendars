@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------------------
 MIT License
 
-Copyright (c) 2022 Matthew Nathan Green
+Copyright (c) 2022-2025 Matthew Nathan Green
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ class HtmlWriter {
   public:
     // Each calendar is headered by a banner that allows other years to be selected.
     void outputDocument(std::iostream &output, const std::string &htmlTemplate, size_t coreYear,
-                        const Years &data);
+                        const Years &data) const;
 
     // Create a html tag
     static std::string headerOpen(const std::string &id) {

@@ -1,8 +1,7 @@
-
 /* ------------------------------------------------------------------------------
 MIT License
 
-Copyright (c) 2022 Matthew Nathan Green
+Copyright (c) 2022-2025 Matthew Nathan Green
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation outputs (the "Software"), to deal
@@ -18,7 +17,7 @@ copies or substantial portions of the Software.
 #include "html_writer.h"
 
 void HtmlWriter::outputDocument(std::iostream &output, const std::string &htmlTemplate,
-                                size_t coreYear, const Years &data) {
+                                size_t coreYear, const Years &data) const {
     outputDocumentHeaderHtml(output, htmlTemplate);
     for (auto &year : data) {
         HtmlWriter::outputYearHeaderHtml(output, year.first, data);

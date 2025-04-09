@@ -1,5 +1,3 @@
-
-
 # This section compiles the unit tests ------------------------------------
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest)
 
@@ -27,22 +25,15 @@ add_executable(test_generate
     generate_test.cpp
 )
 
-add_executable(test_wrapper
-    wrapper_test.cpp
-    ${CMAKE_SOURCE_DIR}/wrapper.cpp
-)
-
 target_link_libraries(test_month_element gmock gtest gtest_main) 
 target_link_libraries(test_gregorian_impl gmock gtest gtest_main)
 target_link_libraries(test_html_writer gmock gtest gtest_main)
 target_link_libraries(test_generate gmock gtest gtest_main)
-target_link_libraries(test_wrapper gmock gtest gtest_main)
 
 gtest_discover_tests(test_month_element)
 gtest_discover_tests(test_gregorian_impl)
 gtest_discover_tests(test_html_writer)
 gtest_discover_tests(test_generate)
-gtest_discover_tests(test_wrapper)
 
 # This section adds coverage the unit tests -------------------------------
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -68,5 +59,4 @@ setup_target_for_coverage_lcov(
       test_gregorian_impl
       test_html_writer
       test_generate
-      test_wrapper 
 )

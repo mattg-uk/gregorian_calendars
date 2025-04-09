@@ -4,7 +4,6 @@ project(Application)
 
 set(APPLICATION_SOURCES
   app_main.cpp
-  wrapper.cpp
   month_element.cpp
   html_writer.cpp
   )

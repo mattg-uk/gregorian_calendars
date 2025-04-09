@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------------------
 MIT License
 
-Copyright (c) 2022 Matthew Nathan Green
+Copyright (c) 2022-2025 Matthew Nathan Green
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@ copies or substantial portions of the Software.
 #include <regex>
 #include <sstream>
 
-#include "wrapper.h"
+#include "generate.h"
 
 namespace fs = std::filesystem;
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         case 'y': {
             std::stringstream parse{optarg};
             parse >> year;
-            halt |= (parse.fail() || year < getLowerGregorianBound());
+            halt |= (parse.fail() || year < lowerGregorianBound);
             break;
         }
         case 'o':
